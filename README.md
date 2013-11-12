@@ -19,6 +19,21 @@ It has basic security to protect against directory traversal attacks.
 
 
 
+There are two implementations:
+
+-   A single-threaded server (server.py)
+
+-   A multi-threaded server (server_threaded.py)
+
+
+
+The single-threaded will only accept one client connection at a time
+
+The multi-threaded server will accept simultaneous client connections and
+processes them simultaneously
+
+
+
 This server was created by:
 
 -   Greg M. Crist, Jr. (<gmcrist@gmail.com>)
