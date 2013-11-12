@@ -1,0 +1,22 @@
+body {
+    font-family: Helvetica-Neue, Helvetica, Arial, sans-serif;
+    background-color: #fff;
+    color: #4e4d4a;
+}
+
+ul.nav {
+}
+
+ul.nav li {
+}
+
+ul.nav li a:link, ul.nav li a:visited {
+    color: #2b4e72;
+    text-decoration: none;
+}
+
+ul.nav li a:hover, ul.nav li a:active {
+    color: #2790b0;
+    text-decoration: underline;
+}
+
