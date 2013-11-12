@@ -132,9 +132,12 @@ class HttpServer ():
             self._logger.info('Sending response to client with response code ' + str(response_code))
             headers = self._genHeaders(response_code);
             client.send(str(headers))
-            for i in range(0, len(response)):
-                client.send(response[i])
-            
+
+            # Send client data in as large as chunks as possible and continue to sending until all chunks have been sent
+            while response:
+                n = client.send(response)
+                response = response[n:]
+
             self._logger.info('Closing connection with client')
             client.close()
 

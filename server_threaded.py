@@ -266,10 +266,14 @@ class HttpServerClientThread (threading.Thread):
 
         # Send HTTP response headers and response body to client
         server._logger.info('Sending response to client with response code ' + str(response_code))
+
         headers = server._genHeaders(response_code);
         client.send(str(headers))
-        for i in range(0, len(response)):
-            client.send(response[i])
+
+        # Send client data in as large as chunks as possible and continue to sending until all chunks have been sent
+        while response:
+            n = client.send(response)
+            response = response[n:]
         
         # Close the client socket connection when we are done running
         server._logger.info('Closing connection with client')
