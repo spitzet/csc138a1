@@ -3,6 +3,8 @@
 # CPE 138, Fall 2013
 # California State University, Sacramento
 #
+# This is a single blocking HTTP server implementation
+#
 # Created by Greg M. Crist, Jr. <gmcrist@gmail.com> & Travis Spitze <travissp87@gmail.com>
 ##
 
@@ -16,14 +18,23 @@ import time         # Date / time functions
 
 # Default configuration for the server
 config = {
-    'host': '127.0.0.1',
+    'host': '0.0.0.0',
     'port': '9999',
+    'maxconnections': 5,
     'wwwroot': './public_html/',
     'indexfile': 'index.html',
-    'loglevel': logging.DEBUG
+    'loglevel': logging.INFO
 }
 
 class HttpServer ():
+    _defaultConfig = {
+        'host': '0.0.0.0',
+        'port': '80',
+        'maxconnections': 5,
+        'wwwroot': './public_html',
+        'indexfile': 'index.html',
+    }
+
     _responseCodes = {
         200: 'OK',
         403: 'Forbidden',
@@ -33,7 +44,7 @@ class HttpServer ():
     }
 
     def __init__(self, config):
-        self.config = config
+        self.config = dict(self._defaultConfig.items() + config.items())
         self._logger = logging.getLogger('HttpServer')
         self._methodHandlers = { 'GET': self._getHandler }
 
@@ -80,7 +91,9 @@ class HttpServer ():
     #   * returns 
     ##
     def _wait(self):
-        self.socket.listen(3)
+        self.socket.listen(self.config['maxconnections'])
+
+        self._logger.info('Waiting for connections...')
 
         while (True):
             # Default values
@@ -88,8 +101,6 @@ class HttpServer ():
             uri = ''
             body = ''
             response_code = 200
-
-            self._logger.info('Waiting for connections...')
 
             client, remote_addr = self.socket.accept();
             self._logger.info('Received connection from ' + str(remote_addr))
